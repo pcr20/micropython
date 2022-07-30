@@ -66,7 +66,7 @@ if WEBREPL_PASS:
     c.publish("esp32/{}/enablewebreplstatus".format(mac),"starting webrepl: {} {}".format(WEBREPL_PASS,ip))
     webrepl.start(password=WEBREPL_PASS)
 else:
-    c.publish("esp32/{}/enablewebreplstatus".format(mac),"not starting webrepl")
+    c.publish("esp32/{}/enablewebreplstatus".format(mac),"not starting webrepl: {}".format(ip))
 c.disconnect()
 
     
