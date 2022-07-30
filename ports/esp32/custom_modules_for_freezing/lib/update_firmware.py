@@ -40,6 +40,7 @@ def verify_partition(src_url, dest):
 
 def do_update(binary_url="https://github.com/pcr20/uibbq/raw/main/micropython.bin"):
     next_part=Partition(Partition.RUNNING).get_next_update()
+    print("Current running {} writing flash for {}".format(Partition(Partition.RUNNING).info()[4],next_part.info()[4]))
     binary_url="https://github.com/pcr20/uibbq/raw/main/micropython.bin"
     write_partition(binary_url, next_part)
     verify_partition(binary_url, next_part)
