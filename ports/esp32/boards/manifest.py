@@ -11,6 +11,7 @@ include("$(PORT_DIR)/custom_modules_for_freezing/lib/bluetooth/aioble/manifest.p
 freeze("$(PORT_DIR)/custom_modules_for_freezing", ("evo_gateway/__init__.py", "evo_gateway/app.py", "evo_gateway/app_helper.py","evo_gateway/config.py","evo_gateway/general.py","evo_gateway/globalcfg.py","evo_gateway/mqtt.py"))
 freeze("$(PORT_DIR)/custom_modules_for_freezing/lib", ("configparser.py"))
 freeze("$(PORT_DIR)/custom_modules_for_freezing/lib", ("urequests.py"))
+freeze("$(PORT_DIR)/custom_modules_for_freezing/lib", ("uping.py"))
 freeze("$(PORT_DIR)/custom_modules_for_freezing/lib", ("update_firmware.py"))
 freeze("$(PORT_DIR)/custom_modules_for_freezing/lib", ("umqtt/simple.py","umqtt/robust.py"))
 freeze("$(PORT_DIR)/custom_modules_for_freezing/lib", ("os/path.py"))

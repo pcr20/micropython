@@ -214,15 +214,15 @@ def mqtt_on_message(topic, msg):
                     mqtt_publish(SYS_CONFIG_COMMAND,json_data[SYS_CONFIG_COMMAND],fio.read())
                 return
             elif json_data[SYS_CONFIG_COMMAND] == "ip" or json_data[SYS_CONFIG_COMMAND] == "mac" :
-                    mac = ubinascii.hexlify(network.WLAN().config('mac'),':').decode()
-                    ip=network.WLAN().ifconfig()[0]
-                    mqtt_publish(SYS_CONFIG_COMMAND,json_data[SYS_CONFIG_COMMAND],json.dumps({"ip":ip,"mac":mac}))
+                mac = ubinascii.hexlify(network.WLAN().config('mac'),':').decode()
+                ip=network.WLAN().ifconfig()[0]
+                mqtt_publish(SYS_CONFIG_COMMAND,json_data[SYS_CONFIG_COMMAND],json.dumps({"ip":ip,"mac":mac}))
                 return
             elif json_data[SYS_CONFIG_COMMAND] == "reset":
-                    mqtt_publish(SYS_CONFIG_COMMAND,json_data[SYS_CONFIG_COMMAND],"resetting...")
-                    time.sleep(1)
-                    machine.reset()
-                return                
+                mqtt_publish(SYS_CONFIG_COMMAND,json_data[SYS_CONFIG_COMMAND],"resetting...")
+                time.sleep(1)
+                machine.reset()
+                return
             else:
                 display_and_log(SYSTEM_MSG_TAG, "System configuration command '{}' not recognised".format(
                     json_data[SYS_CONFIG_COMMAND]))
