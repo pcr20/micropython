@@ -216,9 +216,10 @@ They each have default GPIO assigned to them, however depending on your
 ESP32 variant and board, these pins may conflict with embedded flash,
 onboard PSRAM or peripherals.
 
-Any GPIO can be used for hardware UARTs using the GPIO matrix, so to avoid
-conflicts simply provide ``tx`` and ``rx`` pins when constructing. The default
-pins listed below.
+Any GPIO can be used for hardware UARTs using the GPIO matrix, except for
+input-only pins 34-39 that can be used as ``rx``. To avoid conflicts simply
+provide ``tx`` and ``rx`` pins when constructing. The default pins listed
+below.
 
 =====  =====  =====  =====
 \      UART0  UART1  UART2
@@ -589,7 +590,7 @@ See :ref:`machine.SDCard <machine.SDCard>`. ::
 
     # Slot 2 uses pins sck=18, cs=5, miso=19, mosi=23
     sd = machine.SDCard(slot=2)
-    os.mount(sd, "/sd")  # mount
+    os.mount(sd, '/sd')  # mount
 
     os.listdir('/sd')    # list directory contents
 

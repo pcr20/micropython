@@ -58,7 +58,7 @@ FROZEN_MANIFEST ?= modules/manifest.py
 include ../../py/py.mk
 include ../../extmod/extmod.mk
 
-GIT_SUBMODULES = lib/nrfx lib/tinyusb
+GIT_SUBMODULES += lib/nrfx lib/tinyusb
 
 MICROPY_VFS_FAT ?= 0
 
@@ -124,7 +124,7 @@ endif
 
 
 CFLAGS += $(CFLAGS_MCU_$(MCU_SERIES))
-CFLAGS += $(INC) -Wall -Werror -g -ansi -std=c11 -nostdlib $(COPT) $(NRF_DEFINES) $(CFLAGS_MOD) $(CFLAGS_EXTRA)
+CFLAGS += $(INC) -Wall -Werror -ansi -std=c11 -nostdlib $(COPT) $(NRF_DEFINES) $(CFLAGS_MOD) $(CFLAGS_EXTRA)
 CFLAGS += -fno-strict-aliasing
 CFLAGS += -Iboards/$(BOARD)
 CFLAGS += -DNRF5_HAL_H='<$(MCU_VARIANT)_hal.h>'
@@ -140,9 +140,12 @@ endif
 #Debugging/Optimization
 ifeq ($(DEBUG), 1)
 #ASMFLAGS += -g -gtabs+
-CFLAGS += -O0 -ggdb
+CFLAGS += -g -O0
 LDFLAGS += -O0
 else
+ifneq ($(LTO), 1)
+CFLAGS += -g  # always include debug info in the ELF, unless LTO is on
+endif
 CFLAGS += -Os -DNDEBUG
 LDFLAGS += -Os
 endif
