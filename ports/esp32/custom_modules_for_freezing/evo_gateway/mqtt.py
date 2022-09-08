@@ -48,6 +48,10 @@ import re
 import io
 import time  # , datetime
 
+import ntptime
+import ubinascii
+import network
+
 import json
 import re
 from evo_gateway.config import SYSTEM_MSG_TAG
@@ -198,6 +202,22 @@ def mqtt_on_message(topic, msg):
                                 "devices: {}".format(_s))
                 mqtt_publish(SYS_CONFIG_COMMAND,json_data[SYS_CONFIG_COMMAND],_s)
                 return
+            elif json_data[SYS_CONFIG_COMMAND] == "ntp":
+                try: 
+                    ntptime.settime()
+                    mqtt_publish(SYS_CONFIG_COMMAND,json_data[SYS_CONFIG_COMMAND],"success")
+                except OSError as e:
+                    fio = io.StringIO()
+                    sys.print_exception(e, fio)                    
+                    fio.seek(0)
+                    mqtt_publish(SYS_CONFIG_COMMAND,json_data[SYS_CONFIG_COMMAND],fio.read())
+                return
+            elif json_data[SYS_CONFIG_COMMAND] == "ip" or json_data[SYS_CONFIG_COMMAND] == "mac" :
+                    mac = ubinascii.hexlify(network.WLAN().config('mac'),':').decode()
+                    ip=network.WLAN().ifconfig()[0]
+                    mqtt_publish(SYS_CONFIG_COMMAND,json_data[SYS_CONFIG_COMMAND],json.dumps({"ip":ip,"mac":mac}))
+                return
+                
             else:
                 display_and_log(SYSTEM_MSG_TAG, "System configuration command '{}' not recognised".format(
                     json_data[SYS_CONFIG_COMMAND]))
