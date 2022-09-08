@@ -51,6 +51,7 @@ import time  # , datetime
 import ntptime
 import ubinascii
 import network
+import machine
 
 import json
 import re
@@ -217,7 +218,11 @@ def mqtt_on_message(topic, msg):
                     ip=network.WLAN().ifconfig()[0]
                     mqtt_publish(SYS_CONFIG_COMMAND,json_data[SYS_CONFIG_COMMAND],json.dumps({"ip":ip,"mac":mac}))
                 return
-                
+            elif json_data[SYS_CONFIG_COMMAND] == "reset":
+                    mqtt_publish(SYS_CONFIG_COMMAND,json_data[SYS_CONFIG_COMMAND],"resetting...")
+                    time.sleep(1)
+                    machine.reset()
+                return                
             else:
                 display_and_log(SYSTEM_MSG_TAG, "System configuration command '{}' not recognised".format(
                     json_data[SYS_CONFIG_COMMAND]))
