@@ -32,12 +32,15 @@ def do_connect():
     if not wlan.isconnected():
         print('connecting to network...')
         available=[i[0] for i in wlan.scan()]
-        if b'hurstpark' in available:
-            wlan.connect('hurstpark', 'impasse-cambridge-gestas')
-        elif b'papeterie' in available:
-            wlan.connect('papeterie', 'impasse-cambridge-gestas')
-        else:
-            assert False
+        with open('wifi_secrets.json') as f:
+            ssids=json.load(f)
+        foundWifi=False
+        for ssid in available:
+            if ssid in ssids:
+                wlan.connect(ssid, ssids[ssid])
+                foundWifi=True
+                break
+        assert foundWifi, "No Wifi network found with credentials"
         while not wlan.isconnected():
             pass
     print('network config:', wlan.ifconfig())

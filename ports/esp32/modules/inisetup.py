@@ -46,4 +46,10 @@ def setup():
 #webrepl.start()
 """
         )
+    with open("wifi_secrets.json", "w") as f:
+        f.write(
+            """\
+{"ssid":"password"}
+"""
+        )        
     return vfs
