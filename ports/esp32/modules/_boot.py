@@ -19,6 +19,7 @@ import ubinascii
 from umqtt.robust import MQTTClient
 from machine import WDT
 from esp32 import Partition
+import json
 
 SLEEPTIME_S=1800
 #SLEEPTIME_S=20
@@ -36,7 +37,7 @@ def do_connect():
             ssids=json.load(f)
         foundWifi=False
         for ssid in available:
-            if ssid in ssids:
+            if ssid.decode('utf-8') in ssids:
                 wlan.connect(ssid, ssids[ssid])
                 foundWifi=True
                 break
@@ -47,6 +48,7 @@ def do_connect():
     return wlan.ifconfig()[0]
 
 ip=do_connect()
+assert network.WLAN(network.STA_IF).isconnected(), "Wifi not connected"
 
 def mqtt_sub_cb(topic, msg):
     global WEBREPL_PASS

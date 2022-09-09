@@ -3,13 +3,14 @@ from esp32 import Partition
 import machine
 import gc
 
-def write_partition(src_url, dest):
+def write_partition(src_url, dest,blk=None):
     r = requests.get(src_url)
     sz=int(r.headers['Content-Length'])
     if (dest.info()[3]>>12) < ((sz>>12) + 1):
         raise ValueError("Sizes not compatible: {} vs {}".format(sz, dest.info()[3]))
     addr = 0
-    blk = bytearray(4096)
+    if not blk:
+        blk = bytearray(4096)
     print("Writing ... to {}".format(dest.info()[4]))
     while addr < sz:
         if addr & 0xFFFF == 0:
@@ -20,14 +21,16 @@ def write_partition(src_url, dest):
         addr += len(blk)
     print("Write OK")
 
-def verify_partition(src_url, dest):
+def verify_partition(src_url, dest,blk=None,blk_src=None):
     r = requests.get(src_url)
     sz=int(r.headers['Content-Length'])
     if (dest.info()[3]>>12) < ((sz>>12) + 1):
         raise ValueError("Sizes not compatible: {} vs {}".format(sz, dest.info()[3]))
     addr = 0
-    blk = bytearray(4096)
-    blk_src = bytearray(4096)
+    if not blk:
+        blk = bytearray(4096)
+    if not blk_src:
+        blk_src = bytearray(4096)
     print("Verifying ...")
     while addr < sz:
         if addr & 0xFFFF == 0:
@@ -43,9 +46,11 @@ def do_update(binary_url="https://github.com/pcr20/micropython/raw/master/ports/
     next_part=Partition(Partition.RUNNING).get_next_update()
     print("Current running {} writing flash for {}".format(Partition(Partition.RUNNING).info()[4],next_part.info()[4]))
     gc.collect()
-    write_partition(binary_url, next_part)
+    blk = bytearray(4096),
+    blk_src = bytearray(4096)
+    write_partition(binary_url, next_part,blk)
     gc.collect()
-    verify_partition(binary_url, next_part)
+    verify_partition(binary_url, next_part,blk,blk_src)
     print("Partition {} written, booting into it".format(next_part.info()[4]))
     next_part.set_boot()
     machine.reset()
