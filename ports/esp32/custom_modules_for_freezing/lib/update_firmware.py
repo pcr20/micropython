@@ -1,6 +1,7 @@
 import urequests as requests
 from esp32 import Partition
 import machine
+import gc
 
 def write_partition(src_url, dest):
     r = requests.get(src_url)
@@ -41,7 +42,9 @@ def verify_partition(src_url, dest):
 def do_update(binary_url="https://github.com/pcr20/micropython/raw/master/ports/esp32/build-GENERIC_OTA/micropython.bin"):
     next_part=Partition(Partition.RUNNING).get_next_update()
     print("Current running {} writing flash for {}".format(Partition(Partition.RUNNING).info()[4],next_part.info()[4]))
+    gc.collect()
     write_partition(binary_url, next_part)
+    gc.collect()
     verify_partition(binary_url, next_part)
     print("Partition {} written, booting into it".format(next_part.info()[4]))
     next_part.set_boot()
