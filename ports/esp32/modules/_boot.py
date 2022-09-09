@@ -38,7 +38,7 @@ def do_connect():
         foundWifi=False
         for ssid in available:
             if ssid.decode('utf-8') in ssids:
-                wlan.connect(ssid, ssids[ssid])
+                wlan.connect(ssid, ssids[ssid.decode('utf-8')])
                 foundWifi=True
                 break
         assert foundWifi, "No Wifi network found with credentials"
